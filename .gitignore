@@ -344,3 +344,21 @@ healthchecksdb
 /Installers/WFSolution.CacheService.Installer/XSD/Files.wxs
 /Installers/WFSolution.CacheService.Installer/Project Items/_Configuration.xml
 /Installers/WFSolution.CacheService.Installer/_Product.wxs
+
+
+
+
+# User-specific files
+*.suo
+*.user
+.vs/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+
+# NuGet
+**/[Pp]ackages/*
+*.nupkg
