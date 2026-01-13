@@ -1,0 +1,1018 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "title": "Метрические показатели от АИС АИСТ-М",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Версия структуры"
+    },
+    "metrics_on": {
+      "type": "boolean",
+      "description": "Признак того, что на сервере включен сбор показателей true, иначе отключен false"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Имя продукта (системы). Имя сервера приложений (хоста)"
+    },
+    "start_date": {
+      "type": "string",
+      "description": "Дата и время начала накопления метрик (в формате YYYY-MM-DDThh:mm:ss±hh:mm)"
+    },
+    "service_date": {
+      "type": "string",
+      "description": "Дата и время формирования документа с метриками (в формате YYYY-MM-DDThh:mm:ss±hh:mm)"
+    },
+    "mq": {
+      "type": "object",
+      "description": "Информация о состоянии транспортной подсистемы (статистика по всем очередям общая)",
+      "properties": {
+        "mq_online": {
+          "type": "boolean",
+          "description": "От сервиса MQ получен отклик"
+        },
+        "income_queue_deep": {
+          "type": "integer",
+          "description": "Глубина (количество) очереди входящих сообщений"
+        },
+        "mq_received": {
+          "type": "integer",
+          "description": "Количество сообщений принятых из ТТП (+)"
+        },
+        "mq_sended": {
+          "type": "object",
+          "description": "Количество отправленных исходящих сообщений (по временным интервалам)",
+          "properties": {
+            "less5sec": {
+              "type": "integer",
+              "description": "менее 5 сек"
+            },
+            "f5_10sec": {
+              "type": "integer",
+              "description": "от 5 сек до 10 сек"
+            },
+            "f10_30sec": {
+              "type": "integer",
+              "description": "от 10 сек до 30 сек"
+            },
+            "f30_60sec": {
+              "type": "integer",
+              "description": "от 30 сек до 1 мин"
+            },
+            "f1_3min": {
+              "type": "integer",
+              "description": "от 1 мин до 3 мин"
+            },
+            "f3_5min": {
+              "type": "integer",
+              "description": "от 3 мин до 5 мин"
+            },
+            "f5_10min": {
+              "type": "integer",
+              "description": "от 5 мин до 10 мин"
+            },
+            "f10_60min": {
+              "type": "integer",
+              "description": "от 10 мин до 1 часа"
+            },
+            "f1_6hours": {
+              "type": "integer",
+              "description": "от 1 часа до 6 часов"
+            },
+            "more6hours": {
+              "type": "integer",
+              "description": "более 6 часов"
+            }
+          }
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "description": "Информация о БД",
+      "properties": {
+        "database_online": {
+          "type": "boolean",
+          "description": "От БД получен отклик"
+        },
+        "db_links": {
+          "type": "array",
+          "description": "Список используемых DBLink",
+          "items": {
+            "type": "object",
+            "description": "Информация по конкретному DBLink",
+            "properties": {
+              "link_name": {
+                "type": "string",
+                "description": "Наименование DBLink"
+              },
+              "link_online": {
+                "type": "boolean",
+                "description": "При запросе к DBLink получен отклик"
+              }
+            }
+          }
+        }
+      }
+    },
+    "common": {
+      "type": "object",
+      "description": "Общие метрики",
+      "properties": {
+        "msg_processed": {
+          "type": "object",
+          "description": "Количество обработанных входящих сообщений, ранее сохраненных в БД",
+          "properties": {
+            "less5sec": {
+              "type": "integer",
+              "description": "менее 5 сек (+)"
+            },
+            "f5_10sec": {
+              "type": "integer",
+              "description": "от 5 сек до 10 сек (+)"
+            },
+            "f10_30sec": {
+              "type": "integer",
+              "description": "от 10 сек до 30 сек (+)"
+            },
+            "f30_60sec": {
+              "type": "integer",
+              "description": "от 30 сек до 1 мин (+)"
+            },
+            "f1_3min": {
+              "type": "integer",
+              "description": "от 1 мин до 3 мин (+)"
+            },
+            "f3_5min": {
+              "type": "integer",
+              "description": "от 3 мин до 5 мин (+)"
+            },
+            "f5_10min": {
+              "type": "integer",
+              "description": "от 5 мин до 10 мин (+)"
+            },
+            "f10_60min": {
+              "type": "integer",
+              "description": "от 10 мин до 1 часа (+)"
+            },
+            "f1_6hours": {
+              "type": "integer",
+              "description": "от 1 часа до 6 часов (+)"
+            },
+            "more6hours": {
+              "type": "integer",
+              "description": "более 6 часов (+)"
+            }
+          }
+        },
+        "msg_errors": {
+          "type": "integer",
+          "description": "Количество ошибок при обработке сообщений (+)"
+        },
+        "pp": {
+          "type": "object",
+          "description": "Взаимодействие по прибытию товаров в АС ПП",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "ktt": {
+          "type": "object",
+          "description": "Взаимодействие по завершению транзита с АС КТТ-2",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "wh": {
+          "type": "object",
+          "description": "Взаимодействие с КПС Учет товаров на ВХ по размещению товаров на ВХ",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "marking": {
+          "type": "object",
+          "description": "Взаимодействие с ГИС Маркировка",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "risks": {
+          "type": "object",
+          "description": "Взаимодействие с ЕСВР (общий показатель)",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "risks_dt": {
+          "type": "object",
+          "description": "Взаимодействие с ЕСВР (только в части ДТ)",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "smev": {
+          "type": "object",
+          "description": "Взаимодействие со СМЭВ в части запроса разрешительных документов",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "writeoff": {
+          "type": "object",
+          "description": "Взаимодействие с ЕЛС в части запроса на списание средств",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "scvv": {
+          "type": "object",
+          "description": "Взаимодействие с СКВВ в части запроса информации по фактически вывезенному объему товаров",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "pics": {
+          "type": "object",
+          "description": "Взаимодействие с фотоархивом в части запроса на размещение фото-видео-изображений",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        },
+        "flk": {
+          "type": "object",
+          "description": "Взаимодействие с КПС ФЛК в части запроса на проведение форматно-логического контроля у различных процессов",
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "description": "Количество направленных запросов (+)"
+            },
+            "responses": {
+              "type": "object",
+              "description": "Количество поступивших ответов (по интервалам)",
+              "properties": {
+                "less5sec": {
+                  "type": "integer",
+                  "description": "менее 5 сек (+)"
+                },
+                "f5_10sec": {
+                  "type": "integer",
+                  "description": "от 5 сек до 10 сек (+)"
+                },
+                "f10_30sec": {
+                  "type": "integer",
+                  "description": "от 10 сек до 30 сек (+)"
+                },
+                "f30_60sec": {
+                  "type": "integer",
+                  "description": "от 30 сек до 1 мин (+)"
+                },
+                "f1_3min": {
+                  "type": "integer",
+                  "description": "от 1 мин до 3 мин (+)"
+                },
+                "f3_5min": {
+                  "type": "integer",
+                  "description": "от 3 мин до 5 мин (+)"
+                },
+                "f5_10min": {
+                  "type": "integer",
+                  "description": "от 5 мин до 10 мин (+)"
+                },
+                "f10_60min": {
+                  "type": "integer",
+                  "description": "от 10 мин до 1 часа (+)"
+                },
+                "f1_6hours": {
+                  "type": "integer",
+                  "description": "от 1 часа до 6 часов (+)"
+                },
+                "more6hours": {
+                  "type": "integer",
+                  "description": "более 6 часов (+)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "customs": {
+      "type": "array",
+      "description": "Показатели по каждому ТО в отдельности",
+      "items": {
+        "type": "object",
+        "description": "Показатели конкретного ТО",
+        "properties": {
+          "customs_code": {
+            "type": "string",
+            "description": "Код ТО применительно к которому указываются показатели"
+          },
+          "func_called": {
+            "type": "integer",
+            "description": "Количество клиентских вызовов функций"
+          },
+          "sync_count": {
+            "type": "integer",
+            "description": "Количество запросов на синхронизацию от БХ (+)"
+          },
+          "database": {
+            "type": "object",
+            "description": "Показатели работы БД БХ",
+            "properties": {
+              "timestamp": {
+                "type": "string",
+                "description": "Метка времени сбора статистики по БД (в формате YYYY-MM-DDThh:mm:ss±hh:mm)"
+              },
+              "err": {
+                "type": "boolean",
+                "description": "Наличие ошибок при сборе статистики"
+              },
+              "size": {
+                "type": "integer",
+                "description": "Размер базы данных в байтах"
+              },
+              "disk_free": {
+                "type": "integer",
+                "description": "Свободное место на диске, где размещена БД"
+              },
+              "oit": {
+                "type": "integer",
+                "description": "Старейшая интересующая транзакция (OIT)"
+              },
+              "oat": {
+                "type": "integer",
+                "description": "Старейшая активная транзакция (OAT)"
+              },
+              "ost": {
+                "type": "integer",
+                "description": "Старейшая снапшот транзакция (OST)"
+              },
+              "nt": {
+                "type": "integer",
+                "description": "Следующая транзакция"
+              },
+              "att_idle": {
+                "type": "integer",
+                "description": "Количество бездействующих подключений"
+              },
+              "att_active": {
+                "type": "integer",
+                "description": "Количество активных подключений"
+              },
+              "att_stalled": {
+                "type": "integer",
+                "description": "Количество задержанных подключений"
+              },
+              "mem_using": {
+                "type": "integer",
+                "description": "Памяти используется, байт"
+              },
+              "mem_reserved": {
+                "type": "integer",
+                "description": "Памяти зарезервировано, байт"
+              },
+              "resp_time": {
+                "type": "integer",
+                "description": "Время отклика на запрос статистики, мсек"
+              }
+            }
+          },
+          "feed_import": {
+            "type": "integer",
+            "description": "Количество поданных импортных ДТ (+)"
+          },
+          "feed_prd": {
+            "type": "integer",
+            "description": "Количество поданных предварительных ДТ (+)"
+          },
+          "feed_export": {
+            "type": "integer",
+            "description": "Количество поданных экспортных ДТ (+)"
+          },
+          "ar_import": {
+            "type": "object",
+            "description": "Количество импортных ДТ, пошедших автоматическую регистрацию (по интервалам)",
+            "properties": {
+              "less30sec": {
+                "type": "integer",
+                "description": "менее 30 сек (+)"
+              },
+              "f30_60sec": {
+                "type": "integer",
+                "description": "от 30 сек до 60 сек (+)"
+              },
+              "f1_3min": {
+                "type": "integer",
+                "description": "от 1 мин до 3 мин (+)"
+              },
+              "f3_10min": {
+                "type": "integer",
+                "description": "от 3 мин до 10 мин (+)"
+              },
+              "more10min": {
+                "type": "integer",
+                "description": "более 10 мин (+)"
+              }
+            }
+          },
+          "ar_prd": {
+            "type": "object",
+            "description": "Количество предварительных ДТ, пошедших автоматическую регистрацию (по интервалам)",
+            "properties": {
+              "less30sec": {
+                "type": "integer",
+                "description": "менее 30 сек (+)"
+              },
+              "f30_60sec": {
+                "type": "integer",
+                "description": "от 30 сек до 60 сек (+)"
+              },
+              "f1_3min": {
+                "type": "integer",
+                "description": "от 1 мин до 3 мин (+)"
+              },
+              "f3_10min": {
+                "type": "integer",
+                "description": "от 3 мин до 10 мин (+)"
+              },
+              "more10min": {
+                "type": "integer",
+                "description": "более 10 мин (+)"
+              }
+            }
+          },
+          "ar_export": {
+            "type": "object",
+            "description": "Количество экспортных ДТ, пошедших автоматическую регистрацию (по интервалам)",
+            "properties": {
+              "less30sec": {
+                "type": "integer",
+                "description": "менее 30 сек (+)"
+              },
+              "f30_60sec": {
+                "type": "integer",
+                "description": "от 30 сек до 60 сек (+)"
+              },
+              "f1_3min": {
+                "type": "integer",
+                "description": "от 1 мин до 3 мин (+)"
+              },
+              "f3_10min": {
+                "type": "integer",
+                "description": "от 3 мин до 10 мин (+)"
+              },
+              "more10min": {
+                "type": "integer",
+                "description": "более 10 мин (+)"
+              }
+            }
+          },
+          "ai_import": {
+            "type": "object",
+            "description": "Количество импортных ДТ, пошедших автоматический выпуск (по интервалам)",
+            "properties": {
+              "less30sec": {
+                "type": "integer",
+                "description": "менее 30 сек (+)"
+              },
+              "f30_60sec": {
+                "type": "integer",
+                "description": "от 30 сек до 60 сек (+)"
+              },
+              "f1_3min": {
+                "type": "integer",
+                "description": "от 1 мин до 3 мин (+)"
+              },
+              "f3_10min": {
+                "type": "integer",
+                "description": "от 3 мин до 10 мин (+)"
+              },
+              "more10min": {
+                "type": "integer",
+                "description": "более 10 мин (+)"
+              }
+            }
+          },
+          "ai_export": {
+            "type": "object",
+            "description": "Количество экспортных ДТ, пошедших автоматический выпуск (по интервалам)",
+            "properties": {
+              "less30sec": {
+                "type": "integer",
+                "description": "менее 30 сек (+)"
+              },
+              "f30_60sec": {
+                "type": "integer",
+                "description": "от 30 сек до 60 сек (+)"
+              },
+              "f1_3min": {
+                "type": "integer",
+                "description": "от 1 мин до 3 мин (+)"
+              },
+              "f3_10min": {
+                "type": "integer",
+                "description": "от 3 мин до 10 мин (+)"
+              },
+              "more10min": {
+                "type": "integer",
+                "description": "более 10 мин (+)"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

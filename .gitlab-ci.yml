@@ -1,0 +1,463 @@
+variables:
+  MSBUILD_PATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe'
+  DEBUG_BUILD_PATH: '.\Deploy\Debug'
+  SERVICE_BUILD_PATH: '.\Deploy\Service'
+  INTERFACE_BUILD_PATH: '.\Deploy\Interface'
+  CACHESERVICE_BUILD_PATH: '.\Deploy\CacheService'
+  CACHESERVICE_DEPLOY_PATH: 'C:\WFSolution\CacheService'
+  CACHESERVICE_NAME: 'CacheService_15.07.2019'
+  EDITOR_FOLDER: '.\Deploy\Editor'
+  DOCUMENTATION_FOLDER: '.\Deploy\Documentation'
+  BUILD_CONSTS_PATH: '.\WFSolution.Core\BuildConsts.cs'
+  BUILD_LOG_PARAM: 'ErrorsOnly'
+  CACHESERVICE_INSTALLER_PATH: '.\Deploy\CacheService\Installer'
+  CACHESERVICE_INSTALLER_BUILD_PATH : '.\Installers\WFSolution.CacheService.Installer'
+  CACHESERVICE_INSTALLER_CONFIG_PATH : '.\Installers\WFSolution.CacheService.Installer\ProjectItems\Configuration.xml'
+  CACHESERVICE_INSTALLER_BUILD_FILE : '.\Installers\WFSolution.CacheService.Installer\Product.wxs'
+  FIREBIRD_SERVICE_NAME: 'FirebirdServerDefaultInstance'
+  XSD_PATH: 'C:\AISTM\xsd'
+  FIREBIRD_PATH: 'C:\AISTM\CacheServiceInstall\Firebird'
+  FIREBIRD_DB_WORK_PATH: 'C:\WFSolution\CacheService\FireBird\Work\CACHE.FDB'
+  FIREBIRD_DB_TEST_PATH: 'C:\WFSolution\CacheService\FireBird\TEST\CACHE.FDB'
+  FIREBIRD_DB_WORK_PATH_FOR_TEST: 'C:\WFSolution\CacheService\FireBird\Work\test_CACHE.FDB'
+  FIREBIRD_DB_TEST_PATH_FOR_TEST: 'C:\WFSolution\CacheService\FireBird\TEST\test_CACHE.FDB'
+  FIREBIRD_UPDATE_SCRIPT: '.\Database\FireBird\Update_CACHE_EFZ_AISTM.sql'
+  INSTALLER_LINKER: 'C:\Program Files (x86)\dotNetInstaller\bin\InstallerLinker.exe'
+  DOT_NET_INSTALLER: 'C:\Program Files (x86)\dotNetInstaller\bin\dotNetInstaller.exe'
+  NUGET_PATH: 'C:\Program Files\NuGET\nuget.exe'
+  PACKAGES_INSTALLER_DIR: '..\..\packages' # Переменная используется в файле "D:\Develop\KDSoft\wfsolution\Installers\WFSolution.CacheService.Installer\WFSolution.CacheService.Installer.wixproj'
+  PATH_TO_AF: 'C:/Album' # Обязательно слеши в другую сторону
+  PATH_TO_XSD: 'C:\xsd'
+  PATH_TO_XSLT: 'C:\xslt'
+  INTERFACE_PROJECT_FILE: '.\WFSolution.Interface\WFSolution.Interface.csproj'
+
+before_script:
+  - 'CHCP 65001'
+  - 'ipconfig' # выводим для того чтобы точно понимать на какой именно машине выполняется скрипт, т.к. встречаются клоны с одинаковыми именами
+  - '. .\BuildFunctions.ps1'
+
+stages:
+  - Сборка дистрибутива Буферного хранилища с обновлением XSD и XSLT
+  - Дистрибутив Буферного хранилища
+  - Обновление архивов с XSD и XSLT
+  - Создание пустой БД FireBird
+  - Создание БД с последующим обновлением
+  - Обновление копии тестовой БД FireBird
+  - Обновление копии рабочей БД FireBird
+  - Обновление тестовой БД FireBird 
+  - Обновление рабочей БД FireBird 
+  - Сборка редактора БП
+  - Сборка основной службы
+  - Создание релиза
+  - Обновление Буферного хранилища
+  - Публикация пакета Interface
+  - Запуск обновлений
+  - Обновление основной службы (Тамга)
+  - Обновление основной службы (КДСофт)
+  - Отладочная сборка
+  - Запуск юнит-тестов
+  - Запуск интеграционных тестов
+
+Отладочная сборка:
+  stage: Отладочная сборка
+  when: on_success
+  only:
+    - branches
+  except:
+    - service
+  tags:
+    - build
+  script:
+    - 'Set-Build-Consts'
+    - 'dotnet build -c Debug -p x64 -p:RestoreSources=$env:NUGET_LOCAL_SOURCE -p:OverwriteReadOnlyFiles=True -clp:$env:BUILD_LOG_PARAM -v m'
+  artifacts:
+    name: debug
+    expire_in: 2 days
+    paths:
+      - '$env:DEBUG_BUILD_PATH\net48\WFSolution.*.exe'
+      - '$env:DEBUG_BUILD_PATH\net48\*.dll'
+      - '$env:DEBUG_BUILD_PATH\net48\*.config'
+      - '$env:DEBUG_BUILD_PATH\net48\*.json' # json-ы требуются для запуска тестов
+      - '$env:DEBUG_BUILD_PATH\net8.0\WFSolution.*.exe'
+      - '$env:DEBUG_BUILD_PATH\net8.0\*.dll'
+      - '$env:DEBUG_BUILD_PATH\net8.0\*.config'
+      - '$env:DEBUG_BUILD_PATH\net8.0\*.json' # json-ы требуются для запуска тестов
+
+Запуск юнит-тестов:
+  stage: Запуск юнит-тестов
+  allow_failure: true
+  only:
+    - branches
+  except:
+    - service
+  tags:
+    - aist-auto-tests
+  script:
+    - '& dotnet test "$env:DEBUG_BUILD_PATH\net48\WFSolution.Tests.dll" --logger "trx;logfilename=unit_test_report.trx"'
+    - '& dotnet test "$env:DEBUG_BUILD_PATH\net8.0\WFSolution.Tests.Future.dll" --logger "trx;logfilename=future_unit_test_report.trx" --filter Category=Unit'
+  dependencies:
+    - Отладочная сборка
+  artifacts:
+      name: unit_test_report
+      when: always
+      expire_in: 1 days
+      paths:
+        - 'TestResults\unit_test_report.trx'
+        - 'TestResults\future_unit_test_report.trx'
+
+Запуск интеграционных тестов:
+  stage: Запуск интеграционных тестов
+  only:
+    - branches
+  except:
+    - service
+  tags:
+    - aist-auto-tests
+  timeout: 20m
+  script:
+    - '& dotnet test "$env:DEBUG_BUILD_PATH\net48\WFSolution.Tests.Integration.dll" --logger "trx;logfilename=integration_test_report.trx"'
+    - '& dotnet test "$env:DEBUG_BUILD_PATH\net8.0\WFSolution.Tests.Future.dll" --logger "trx;logfilename=future_integration_test_report.trx" --filter Category=Integration'
+  dependencies:
+    - Отладочная сборка
+  artifacts:
+      name: integration_test_report
+      when: always
+      expire_in: 1 days
+      paths:
+        - 'TestResults\integration_test_report.trx'
+        - 'TestResults\future_integration_test_report.trx'
+    
+Сборка основной службы:
+  stage: Сборка основной службы
+  only:
+    - master
+    - world
+  tags:
+    - build
+  dependencies: []
+  script:
+    - 'Set-Build-Consts'
+    - '& dotnet build -o "$env:SERVICE_BUILD_PATH" -c Service -p x64 -p:RestoreSources=$env:NUGET_LOCAL_SOURCE -p:OverwriteReadOnlyFiles=True -clp:$env:BUILD_LOG_PARAM -v m'
+  artifacts:
+    name: WFSolution.Service.$env:CI_COMMIT_REF_NAME.$env:CI_PIPELINE_ID
+    expire_in: 7 days
+    paths:
+      - '$env:SERVICE_BUILD_PATH\WFSolution.*.exe'
+      - '$env:SERVICE_BUILD_PATH\*.dll'
+      # Следующий файл нужен для того чтобы вытаскивать русские описания к методам API
+      - '$env:SERVICE_BUILD_PATH\WFSolution.Interface.xml'
+      
+Создание релиза:
+  stage: Создание релиза
+  when: manual
+  allow_failure: false
+  only:
+   - world
+  tags:
+    - build
+  dependencies:
+    - Сборка основной службы
+  script:
+    - '& Add-Type -Path $env:SERVICE_BUILD_PATH\WFSolution.Interface.dll'
+    - '[WFSolution.Interface.Utils.GitlabUtils]::CreateWorldReleaseFromPipeline()'
+
+Публикация пакета Interface:
+  stage: Публикация пакета Interface
+  when: manual
+  only:
+    - master
+  tags:
+    - build
+  script:
+    - 'Set-Interface-Build-Consts'
+    - '& dotnet pack --configuration Interface'
+    - '& dotnet nuget push "$env:INTERFACE_BUILD_PATH\WFSolution.Interface.*.nupkg" --source $env:NUGET_LOCAL_SOURCE --api-key $env:NUGET_API_KEY'
+
+Запуск обновлений:
+  stage: Запуск обновлений
+  when: manual
+  only:
+    - master
+  allow_failure: false
+  dependencies: []
+  tags:
+    - wfsolution
+  script:
+  # По просьбе трудящихся, запускаем только через 2 минуты, чтобы если что могли дернуть стоп-кран
+    - '& Send-Telegram-Notification -Text "$env:CI_PIPELINE_ID - Запуск обновления СФОД через $env:UPDATE_SLEEP_SECONDS сек."'
+    - '& Start-Sleep -Seconds $env:UPDATE_SLEEP_SECONDS'
+
+Обновление основной службы (Тамга):
+  # В Тамге нет интернета, поэтому оповещение идет в "Запуск обновлений"
+  stage: Обновление основной службы (Тамга)
+  when: on_success
+  only:
+    - master
+  dependencies:
+    - Сборка основной службы
+  environment:
+    name: tamga-test-server
+  tags:
+    - wfsolution-tamga
+  script:
+    - '& echo "Stopping service..."'
+    - '& stop-service $env:SERVICE_NAME'
+    - '& echo "Copy files..."'
+    - '& robocopy $env:SERVICE_BUILD_PATH $env:SERVICE_DEPLOY_PATH *.* /R:5 /W:10; echo 0;'
+    - '& echo "Starting service..."'
+    - '& start-service $env:SERVICE_NAME'
+
+Обновление основной службы (КДСофт):
+  stage: Обновление основной службы (КДСофт)
+  when: on_success
+  only:
+    - master
+  dependencies:
+    - Сборка основной службы
+  environment:
+    name: main-test-server
+  tags:
+    - wfsolution
+  script:
+    - '& stop-service $env:SERVICE_NAME'
+    - '& robocopy $env:SERVICE_BUILD_PATH $env:SERVICE_DEPLOY_PATH *.* /R:5 /W:10; echo 0;'
+    - '& start-service $env:SERVICE_NAME'
+    - '& Compress-Archive "$env:SERVICE_BUILD_PATH" "WFSolution.Service.zip" -CompressionLevel Optimal'
+    - '& Upload-File-To-FTP -Source "WFSolution.Service.zip" -Destination $env:WFSOLUTION_FTP_LOCATION'
+    - '& Send-Telegram-Notification -Text "$env:CI_PIPELINE_ID - Обновление СФОД завершено. Сборка на ФТП - $env:WFSOLUTION_FTP_LOCATION"'
+    - '& Remove-Item "WFSolution.Service.zip" -force'
+      
+Обновление Буферного хранилища:
+  stage: Обновление Буферного хранилища
+  when: manual
+  only:
+    - master
+  environment:
+    name: main-test-server
+  tags:
+    - wfsolution
+  script:
+    - 'Set-Build-Consts'
+    - '& dotnet build -o "$env:CACHESERVICE_BUILD_PATH" -c CacheService -p x64 -p:RestoreSources=$env:NUGET_LOCAL_SOURCE -clp:$env:BUILD_LOG_PARAM -v m'
+    - '& echo "Stopping service..."'
+    - '& stop-service $env:CACHESERVICE_NAME'
+    - '& echo "Copy files..."'
+    - '& robocopy $env:CACHESERVICE_BUILD_PATH $env:CACHESERVICE_DEPLOY_PATH *.dll *.exe /R:5 /W:10; echo 0;'
+    - '& echo "Starting service..."'
+    - '& start-service $env:CACHESERVICE_NAME'
+
+Сборка редактора БП:
+  stage: Сборка редактора БП
+  when: manual
+  tags:
+    - build
+  dependencies: []
+  script:
+    - 'Set-Build-Consts'
+    - '& dotnet build -o "$env:EDITOR_FOLDER" -c Editor -p x64 -p:RestoreSources=$env:NUGET_LOCAL_SOURCE -clp:$env:BUILD_LOG_PARAM -v m'
+    # Копируем во временную папку, т.к. Compress-Archive не умеет сохранять иерархию если ему передавать список файлов, а все файлы нам не нужны
+    - '& New-Item -Force -ItemType Directory "$env:TEMP/WFSolution.Editor\Icons"'
+    - '& Copy-Item -Force -Path "$env:EDITOR_FOLDER\WFSolution.*.dll", "$env:EDITOR_FOLDER\WFSolution.*.exe", "$env:EDITOR_FOLDER\SysUtils.dll", "$env:EDITOR_FOLDER\ServiceCore.dll", "$env:EDITOR_FOLDER\System.Configuration.ConfigurationManager.dll" -Destination "$env:TEMP\WFSolution.Editor"'
+    - '& Copy-Item -Force -Path "$env:EDITOR_FOLDER\Icons\*.png", "$env:EDITOR_FOLDER\Icons\*.ico" -Destination "$env:TEMP\WFSolution.Editor\Icons\"'
+    - '& Compress-Archive "$env:TEMP\WFSolution.Editor\*" "WFSolution.Editor.zip" -CompressionLevel Fastest'
+    - '& Upload-File-To-FTP -Source "WFSolution.Editor.zip" -Destination $env:EDITOR_FTP_LOCATION'
+    - '& Remove-Item "$env:TEMP/WFSolution.Editor" -Recurse'
+  
+Обновление тестовой БД FireBird:
+  stage: Обновление тестовой БД FireBird
+  when: manual
+  tags:
+    - wfsolution
+  only:
+    variables:
+    - $ADDITIONAL_STAGES
+  dependencies: []
+  script:
+    - '& echo "Stopping service FirebirdServerCacheServiceInstance..."'
+    - '& stop-service $env:FIREBIRD_SERVICE_NAME'
+    - '& echo "Starting service FirebirdServerCacheServiceInstance..."'
+    - '& start-service $env:FIREBIRD_SERVICE_NAME'
+    - '& "C:\FireBird.Nuget\FireBird.Server.IBEScript\IBEScript.exe" "$env:FIREBIRD_UPDATE_SCRIPT" -D"localhost/3060:$env:FIREBIRD_DB_TEST_PATH" -U"$env:FIREBIRD_USERNAME" -P"$env:FIREBIRD_PASSWORD" -l"fbclient.dll" -L3'
+
+Обновление рабочей БД FireBird:
+  stage: Обновление рабочей БД FireBird
+  when: manual
+  only:
+    refs:
+    - master
+    variables:
+    - $ADDITIONAL_STAGES
+  tags:
+    - wfsolution
+  dependencies: []
+  script:
+    - '& echo "Stopping service FirebirdServerCacheServiceInstance..."'
+    - '& stop-service $env:FIREBIRD_SERVICE_NAME'
+    - '& echo "Starting service FirebirdServerCacheServiceInstance..."'
+    - '& start-service $env:FIREBIRD_SERVICE_NAME'
+    - '& "C:\FireBird.Nuget\FireBird.Server.IBEScript\IBEScript.exe" "$env:FIREBIRD_UPDATE_SCRIPT" -D"localhost/3060:$env:FIREBIRD_DB_WORK_PATH" -U"$env:FIREBIRD_USERNAME" -P"$env:FIREBIRD_PASSWORD" -l"fbclient.dll" -L3'
+
+Дистрибутив Буферного хранилища:
+  stage: Дистрибутив Буферного хранилища
+  when: manual
+  tags:
+    - build
+  dependencies: []
+  script:
+    - '$resultPathXSD = "$pwd\Installers\WFSolution.CacheService.Installer\ProjectItems\xsd.zip"'
+    - 'Copy-Item -Path "$env:PATH_TO_XSD\XSD.ZIP" "$resultPathXSD"'
+    # Устанавливаем значения переменных для ПЗ "Буферное хранилище"
+    - '$newContent = Get-Content -Path "$env:BUILD_CONSTS_PATH"'
+    - '$newContent = $newContent.replace("%CI_JOB_ID%", "$env:CI_JOB_ID")'
+    - '$newContent = $newContent.replace("%CI_JOB_NAME%", "$env:CI_JOB_NAME")'
+    - '$newContent = $newContent.replace("%CI_JOB_STAGE%", "$env:CI_JOB_STAGE")'
+    - '$newContent = $newContent.replace("%CI_PIPELINE_ID%", "$env:CI_PIPELINE_ID")'
+    - '$newContent = $newContent.replace("%CI_PIPELINE_IID%", "$env:CI_PIPELINE_IID")'
+    - '$newContent = $newContent.replace("%CI_RUNNER_ID%", "$env:CI_RUNNER_ID")'
+    - '$newContent = $newContent.replace("%CI_COMMIT_SHA%", "$env:CI_COMMIT_SHA")'
+    - '$newContent = $newContent.replace("%CI_COMMIT_SHORT_SHA%", "$env:CI_COMMIT_SHORT_SHA")'
+    - '$newContent = $newContent.replace("%CI_COMMIT_REF_NAME%", "$env:CI_COMMIT_REF_NAME")'
+    - '$newContent = $newContent.replace("%CACHE_SERVICE_VERSION%", "$env:CACHE_SERVICE_VERSION")'
+    - '$newContent = $newContent.replace("%WF_SERVICE_VERSION%", "$env:WF_SERVICE_VERSION")'
+    - '$newContent = $newContent.replace("%HEAD_SERVICE_ADDRESS%", "$env:HEAD_SERVICE_ADDRESS")'
+    - '$newContent = $newContent.replace("%HEAD_SERVICE_STREAM_ADDRESS%", "$env:HEAD_SERVICE_STREAM_ADDRESS")'
+    - 'Set-Content -Path "$env:BUILD_CONSTS_PATH" -Value $newContent'
+    # Устанавливаем значения переменных для дистрибутива
+    - '$newContent = Get-Content -Path "$env:CACHESERVICE_INSTALLER_BUILD_FILE"'
+    - '$newContent = $newContent.replace("%CI_JOB_ID%", "$env:CI_JOB_ID")'
+    - '$newContent = $newContent.replace("%CI_PIPELINE_ID%", "$env:CI_PIPELINE_ID")'
+    - '$newContent = $newContent.replace("%CACHE_SERVICE_VERSION%", "$env:CACHE_SERVICE_VERSION")'
+    - '$newContent = $newContent.replace("%WF_SERVICE_VERSION%", "$env:WF_SERVICE_VERSION")'
+    - '$newContent = $newContent.replace("%CI_COMMIT_SHA%", "$env:CI_COMMIT_SHA")'
+    - 'Set-Content -Path "$env:CACHESERVICE_INSTALLER_BUILD_FILE" -Value $newContent'
+    # Установка значений переменных файла конфигурации дистрибутива
+    - '$newContent = Get-Content -Path "$env:CACHESERVICE_INSTALLER_CONFIG_PATH" -Encoding UTF8'
+    - '$newContent = $newContent.replace("%CI_JOB_ID%", "$env:CI_JOB_ID")'
+    - '$newContent = $newContent.replace("%CI_PIPELINE_ID%", "$env:CI_PIPELINE_ID")'
+    - '$newContent = $newContent.replace("%CACHE_SERVICE_VERSION%", "$env:CACHE_SERVICE_VERSION")'
+    - '$newContent = $newContent.replace("%WF_SERVICE_VERSION%", "$env:WF_SERVICE_VERSION")'
+    - 'Set-Content -Path "$env:CACHESERVICE_INSTALLER_CONFIG_PATH" -Value $newContent -Encoding UTF8'
+    # Восстанавливаем пакеты
+    - '& "$env:MSBUILD_PATH" ".\Installers\WFSolution.CacheInstaller\WFSolution.CacheInstaller.csproj" -t:restore -p:RestoreSources=$env:NUGET_SOURCE -p:RestoreNoCache=true -p:RestorePackagesPath="$env:NUGET_PACKAGES"'
+    # Восстанавливаем пакеты
+    - '& "$env:NUGET_PATH" restore "$env:CACHESERVICE_INSTALLER_BUILD_PATH\packages.config" -PackagesDirectory "$env:NUGET_PACKAGES"'
+    - '& "$env:NUGET_PATH" restore "$env:CACHESERVICE_INSTALLER_BUILD_PATH\packages.config" -PackagesDirectory "packages\"'
+    # Создаем БД 
+    - '$env:CI_BUILDS_DIR= "$pwd\$env:CACHESERVICE_INSTALLER_PATH\"'
+    - 'New-Item -Path $env:CI_BUILDS_DIR -ItemType Directory -Force'
+    - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Installers\WFSolution.CacheService.Installer\ProjectItems\CreateDatabase.sql"'
+    - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Database\FireBird\Create_CACHE_EFZ_AISTM.sql" -Dlocalhost/3060:$env:CI_BUILDS_DIR\CACHE.fdb -USYSDBA -PsWwhMR -l"$env:NUGET_PACKAGES\firebird.server\1.0.0\FireBirdServer\WOW64\fbclient.dll" -L3 -V"$env:CI_BUILDS_DIR\crate-db-$env:CI_PIPELINE_ID.log"'
+    # Собираем MSI-установщик
+    - '& dotnet publish --configuration CacheServiceInstaller --self-contained --runtime win-x64 --verbosity minimal --source $env:NUGET_PACKAGES'
+    # Собираем EXE-загрузчик
+    - '$cacheServiceFileName = "WFsolution.CacheService-$env:CACHE_SERVICE_VERSION.$env:CI_PIPELINE_ID"'
+    - '& "$env:INSTALLER_LINKER" /AppPath:"$pwd\Deploy\CacheService\Installer" /Output:"$pwd\Deploy\CacheService\Installer\setup-$cacheServiceFileName.exe" /Template:"$env:DOT_NET_INSTALLER" /Configuration:"$pwd\Installers\WFSolution.CacheService.Installer\ProjectItems\Configuration.xml" /Verbose+'
+    - 'Stop-Process -Name "MSBuild" -Force'
+    # Обновляем дистрибутив на ФТП, в артефактах не храним, т.к. размер слишком большой
+    - '& Compress-Archive "$env:CACHESERVICE_INSTALLER_PATH\setup-$cacheServiceFileName.exe" "$env:CACHESERVICE_BUILD_PATH\$cacheServiceFileName.zip" -CompressionLevel Optimal'
+    - '$ftpFullPath = "$env:CACHESERVICE_FTP_LOCATION_ROOT/$env:CACHE_SERVICE_VERSION/"'
+    - '& Try-Create-FTP-Directory -Destination $ftpFullPath'
+    - '$ftpFullPath = "$ftpFullPath$env:CI_PIPELINE_ID/"'
+    - '& Try-Create-FTP-Directory -Destination $ftpFullPath'
+    - '$ftpFullPath = "$ftpFullPath$cacheServiceFileName.New.zip"'
+    - '& Upload-File-To-FTP -Source "$env:CACHESERVICE_BUILD_PATH\$cacheServiceFileName.zip" -Destination $ftpFullPath'
+    - '& Remove-Item "$env:CACHESERVICE_BUILD_PATH\$cacheServiceFileName.zip" -force'
+    # Из-за проблем с кодировкой именно в этом месте, шлем сообщение на английском. Предположительно сборщик дистрибутива меняет кодировку сессии, но разбираться в этом пока нет времени.
+    # - '& Send-Telegram-Notification -Text "$env:CI_PIPELINE_ID - New CacheService Version - $ftpFullPath"'
+
+Обновление архивов с XSD и XSLT:
+  stage: Обновление архивов с XSD и XSLT
+  when: manual
+  only:
+    variables:
+    - $ADDITIONAL_STAGES
+  tags:
+    - build
+  dependencies: []
+  script:
+    - 'echo "Обновление папки $env:PATH_TO_AF"'
+    - '& svn update "$env:PATH_TO_AF"'
+    - 'echo "Сжатие xsd'
+    - '& Remove-Item "$env:PATH_TO_XSD\xsd.zip"'
+    - '& Compress-Archive -Path "$env:PATH_TO_XSD" -DestinationPath "$env:PATH_TO_XSD\xsd.zip" -CompressionLevel Fastest'
+    - 'echo "Сжатие xslt'
+    - '& Remove-Item "$env:PATH_TO_XSLT\xslt.zip"'
+    - '& Compress-Archive -Path "$env:PATH_TO_XSLT" -DestinationPath "$env:PATH_TO_XSLT\xslt.zip" -CompressionLevel Fastest'
+
+Пустая БД FireBird:
+  stage: Создание пустой БД FireBird
+  when: manual
+  only:
+    variables:
+    - $ADDITIONAL_STAGES
+  tags:
+    - build
+  dependencies: []
+  script:
+  # Восстанавливаем пакеты
+  - '& "$env:MSBUILD_PATH" ".\Installers\WFSolution.CacheInstaller\WFSolution.CacheInstaller.csproj" -t:restore -p:RestoreSources=$env:NUGET_SOURCE -p:RestoreNoCache=true -p:RestorePackagesPath="$env:NUGET_PACKAGES"'
+  # Создаем БД 
+  - '$env:CI_BUILDS_DIR= "$pwd\$env:CACHESERVICE_INSTALLER_PATH\"'
+  - 'New-Item -Path $env:CI_BUILDS_DIR -ItemType Directory -Force'
+  - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Installers\WFSolution.CacheService.Installer\ProjectItems\CreateDatabase.sql"'
+  - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Database\FireBird\Create_CACHE_EFZ_AISTM.sql" -Dlocalhost/3060:$env:CI_BUILDS_DIR\CACHE.fdb -USYSDBA -PsWwhMR -l"$env:NUGET_PACKAGES\firebird.server\1.0.0\FireBirdServer\WOW64\fbclient.dll" -L3 -V"$env:CI_BUILDS_DIR\crate-db-$env:CI_PIPELINE_ID.log"'
+  artifacts:
+    name: CACHE-$env:CACHE_SERVICE_VERSION.$env:CI_PIPELINE_ID.fdb
+    expire_in: 7 days
+    paths:
+      - '$env:CACHESERVICE_INSTALLER_PATH\CACHE.fdb'
+
+Создание тестовой БД с последующим обновлением:
+  stage: Создание БД с последующим обновлением
+  when: manual
+  only:
+    variables:
+    - $ADDITIONAL_STAGES
+  tags:
+  - build
+  dependencies: []
+  script:
+  - '$OutputEncoding = [System.Text.Encoding]::UTF8'
+  # Восстанавливаем пакеты
+  - '& "$env:MSBUILD_PATH" ".\Installers\WFSolution.CacheInstaller\WFSolution.CacheInstaller.csproj" -t:restore -p:RestoreSources=$env:NUGET_SOURCE -p:RestoreNoCache=true -p:RestorePackagesPath="$env:NUGET_PACKAGES"'
+  # Создаем БД 
+  - '$env:CI_BUILDS_DIR= "$pwd\Deploy\CacheService\Installer\test"'
+  - 'New-Item -Path $env:CI_BUILDS_DIR -ItemType Directory -Force'
+  - '$env:OLD_DB= "$env:CI_BUILDS_DIR\old_"'
+  - '$env:NEW_DB= "$env:CI_BUILDS_DIR\new_"'
+  - '$env:CI_BUILDS_DIR= $env:OLD_DB'
+  - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Installers\WFSolution.CacheService.Installer\ProjectItems\CreateDatabase.sql"'
+  - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Database\FireBird\Create_CACHE_EFZ_AISTM.sql" -D"localhost/3060:$($env:OLD_DB)CACHE.fdb" -U"$env:FIREBIRD_USERNAME" -P"$env:FIREBIRD_PASSWORD" -l"$env:NUGET_PACKAGES\firebird.server\1.0.0\FireBirdServer\WOW64\fbclient.dll" -L3 -V"$env:CI_BUILDS_DIR\crate-db-$env:CI_PIPELINE_ID.log"'
+  - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" "$env:FIREBIRD_UPDATE_SCRIPT" -D"localhost/3060:$($env:OLD_DB)CACHE.fdb" -U"$env:FIREBIRD_USERNAME" -P"$env:FIREBIRD_PASSWORD" -l"$env:NUGET_PACKAGES\firebird.server\1.0.0\FireBirdServer\WOW64\fbclient.dll" -L3'
+  - '$env:CI_BUILDS_DIR= $env:NEW_DB'
+  - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Installers\WFSolution.CacheService.Installer\ProjectItems\CreateDatabase.sql"'
+  - '& "$env:NUGET_PACKAGES\firebird.server.ibescript\1.0.0\IBEScript.exe" ".\Database\FireBird\Create_CACHE_EFZ_AISTM.sql" -D"localhost/3060:$($env:NEW_DB)CACHE.fdb" -U"$env:FIREBIRD_USERNAME" -P"$env:FIREBIRD_PASSWORD" -l"$env:NUGET_PACKAGES\firebird.server\1.0.0\FireBirdServer\WOW64\fbclient.dll" -L3 -V"$env:CI_BUILDS_DIR\crate-db-$env:CI_PIPELINE_ID.log"'
+  - '$env:OLD_DB= "$($env:OLD_DB)CACHE.fdb"'
+  - '$env:NEW_DB= "$($env:NEW_DB)CACHE.fdb"'
+  - 'powershell ".\WFSolution.Tests.Integration\Database\DatabaseUpdateScript.ps1"'
+
+Обновление копии тестовой БД FireBird:
+  stage: Обновление копии тестовой БД FireBird
+  when: manual
+  only:
+    variables:
+    - $ADDITIONAL_STAGES
+  tags:
+  - wfsolution
+  dependencies: []
+  script:
+  - 'Copy-Item "$env:FIREBIRD_DB_TEST_PATH" -Destination "$env:FIREBIRD_DB_TEST_PATH_FOR_TEST"'
+  - '& "C:\FireBird.Nuget\FireBird.Server.IBEScript\IBEScript.exe" "$env:FIREBIRD_UPDATE_SCRIPT" -D"localhost/3060:$env:FIREBIRD_DB_TEST_PATH_FOR_TEST" -U"$env:FIREBIRD_USERNAME" -P"$env:FIREBIRD_PASSWORD" -l"fbclient.dll" -L3'
+
+Обновление копии рабочей БД FireBird:
+  stage: Обновление копии рабочей БД FireBird
+  when: manual
+  only:
+    variables:
+    - $ADDITIONAL_STAGES
+  tags:
+  - wfsolution
+  dependencies: []
+  script:
+  - 'Copy-Item "$env:FIREBIRD_DB_WORK_PATH" -Destination "$env:FIREBIRD_DB_WORK_PATH_FOR_TEST"'
+  - '& "C:\FireBird.Nuget\FireBird.Server.IBEScript\IBEScript.exe" "$env:FIREBIRD_UPDATE_SCRIPT" -D"localhost/3060:$env:FIREBIRD_DB_WORK_PATH_FOR_TEST" -U"$env:FIREBIRD_USERNAME" -P"$env:FIREBIRD_PASSWORD" -l"fbclient.dll" -L3'

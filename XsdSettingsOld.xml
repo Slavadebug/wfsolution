@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+	<Output>C:\Projects\Documents</Output>
+    <CollectionType>Array</CollectionType>
+    <BaseNamespace>WFSolution.Documents.Old</BaseNamespace>
+    <SchemasPath>
+        <Path>C:\Projects\Common\Doc\Альбом форматов\5.11.0\xsd</Path>
+    </SchemasPath>
+    <!-- Указанные документы поддерживаются и для более старых АФ, т.к. часть систем не модернизируются -->
+    <Schemas>
+      <!-- СКВВ -->
+      <Schema>ChangeDeclNotif</Schema>
+      <Schema>GoodsExportReq</Schema>
+      <!-- АСО -->
+      <Schema>AdditionalRegistrationNotif</Schema>
+      <Schema>GuaranteeContractAddition</Schema>
+    </Schemas>
+</Settings>

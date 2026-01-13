@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+    <Output>C:\Projects\Documents</Output>
+    <CollectionType>Array</CollectionType>
+    <BaseNamespace>WFSolution.Documents.OBED</BaseNamespace>
+    <SchemasPath>
+        <Path>C:\Projects\Common\Doc\Альбом форматов\ОБЭД\1.0.0</Path>
+    </SchemasPath>
+    <Schemas>
+        <Schema>OBED_Error</Schema>
+        <Schema>OBED_GetLinkRequest</Schema>
+        <Schema>OBED_GetMetaInformationRequest</Schema>
+        <Schema>OBED_GetMetaInformationResponse</Schema>
+        <Schema>OBED_GetPacketResponse</Schema>
+        <Schema>OBED_GetPacketRequest</Schema>
+        <Schema>OBED_PutDocumentRequest</Schema>
+        <Schema>OBED_PutDocumentResponse</Schema>
+        <Schema>OBED_PutMetaInformationRequest</Schema>
+        <Schema>OBED_PutMetaInformationResponse</Schema>
+        <Schema>OBED_Result</Schema>
+    </Schemas>
+</Settings>

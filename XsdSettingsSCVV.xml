@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+	<Output>C:\Projects\Documents</Output>
+    <CollectionType>Array</CollectionType>
+    <BaseNamespace>WFSolution.Documents.SCVV</BaseNamespace>
+    <SchemasPath>
+        <Path>C:\Projects\Common\Doc\Альбом форматов\5.11.0\xsd</Path>
+    </SchemasPath>
+    <Schemas>
+		<!-- ChangeDeclNotif - поддерживается только для 5.11.0, в основной файл не добавлялся -->
+		<Schema>ChangeDeclNotif</Schema>
+    </Schemas>
+</Settings>

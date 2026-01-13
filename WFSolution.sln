@@ -1,0 +1,223 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Core", "WFSolution.Core\WFSolution.Core.csproj", "{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Service", "WFSolution.Service\WFSolution.Service.csproj", "{2A3327F7-27C3-4640-B1C3-7A5CC403A119}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.CacheService", "WFSolution.CacheService\WFSolution.CacheService.csproj", "{A522ACD9-451D-4832-B293-92D4ECE7F59A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Editor", "WFSolution.Editor\WFSolution.Editor.csproj", "{0F196B4C-8905-4446-8CB4-09C9D18E1211}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Documents", "WFSolution.Documents\WFSolution.Documents.csproj", "{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Tests", "WFSolution.Tests\WFSolution.Tests.csproj", "{87419E98-86EC-4066-A68B-22AC47C7295D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{5E291319-7694-46C9-8D23-7A014EBC4AEE}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\wfservice.shfbproj = Documentation\wfservice.shfbproj
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Interface", "WFSolution.Interface\WFSolution.Interface.csproj", "{75A3B814-C81A-4F06-82CE-FA0DE9805A28}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{44B2A0CA-590C-4A9C-8DF7-21566BA74149}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitlab-ci.yml = .gitlab-ci.yml
+		BuildFunctions.ps1 = BuildFunctions.ps1
+		metrics.sfod.jschema = metrics.sfod.jschema
+		XsdSettingsAF.xml = XsdSettingsAF.xml
+		XsdSettingsOBED.xml = XsdSettingsOBED.xml
+		XsdSettingsOld.xml = XsdSettingsOld.xml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Tests.Integration", "WFSolution.Tests.Integration\WFSolution.Tests.Integration.csproj", "{58054D7C-EE0F-4D7A-A138-29D0DC599402}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{4FAFE61F-45CA-490C-8D8C-15C4EB0AA65D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{6106F544-F9D4-4E13-A6BE-41803DC2362B}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "WFSolution.CacheService.Installer", "Installers\WFSolution.CacheService.Installer\WFSolution.CacheService.Installer.wixproj", "{67516868-4347-4FD5-9B9E-F41731986083}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFSolution.CacheInstaller", "Installers\WFSolution.CacheInstaller\WFSolution.CacheInstaller.csproj", "{20AB3AAC-3048-44E7-AF70-D26126E01800}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{0AD48D0F-7337-40ED-AE8D-F4130ABFD2AE}"
+	ProjectSection(SolutionItems) = preProject
+		Database\Oracle\Create_DOCUMENTS_DESC.sql = Database\Oracle\Create_DOCUMENTS_DESC.sql
+		Database\Oracle\Create_EFZ_AISTM_ext.sql = Database\Oracle\Create_EFZ_AISTM_ext.sql
+		Database\Oracle\Create_EFZ_AISTM_int.sql = Database\Oracle\Create_EFZ_AISTM_int.sql
+		Database\Oracle\Create_EFZ_AISTM_tables.sql = Database\Oracle\Create_EFZ_AISTM_tables.sql
+		Database\Oracle\Create_EFZ_AISTM_users.sql = Database\Oracle\Create_EFZ_AISTM_users.sql
+		Database\Oracle\Create_EJ_OWNER.sql = Database\Oracle\Create_EJ_OWNER.sql
+		Database\Oracle\Create_MALAHIT_MONITOR_ANALIZ_tables.sql = Database\Oracle\Create_MALAHIT_MONITOR_ANALIZ_tables.sql
+		Database\Oracle\Create_MESSAGES_DESC.sql = Database\Oracle\Create_MESSAGES_DESC.sql
+		Database\Oracle\Create_NSI_tables.sql = Database\Oracle\Create_NSI_tables.sql
+		Database\Oracle\Create_synonyms_for_EFZ_AISTM.sql = Database\Oracle\Create_synonyms_for_EFZ_AISTM.sql
+		Database\Oracle\Update_EFZ_AISTM_tables.sql = Database\Oracle\Update_EFZ_AISTM_tables.sql
+		Database\Oracle\Update_EJ_OWNER.sql = Database\Oracle\Update_EJ_OWNER.sql
+		Update_NSI_tables.sql = Update_NSI_tables.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Firebird", "Firebird", "{3BF14CB9-6E13-4FF9-AABD-E640964CE3D5}"
+	ProjectSection(SolutionItems) = preProject
+		Database\FireBird\Create_CACHE_EFZ_AISTM.sql = Database\FireBird\Create_CACHE_EFZ_AISTM.sql
+		Database\FireBird\Update_CACHE_EFZ_AISTM.sql = Database\FireBird\Update_CACHE_EFZ_AISTM.sql
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.BusinessProcesses", "WFSolution.BusinessProcesses\WFSolution.BusinessProcesses.csproj", "{E19D2FDC-D11E-4A34-9000-26B0CC515567}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.BusinessProcesses.Commons", "WFSolution.BusinessProcesses.Commons\WFSolution.BusinessProcesses.Commons.csproj", "{61A7C682-AEA2-4A18-BB47-022F72F34AD5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WFSolution.Generators", "WFSolution.Generators\WFSolution.Generators.csproj", "{86DD4F73-D258-42E8-92BA-1BDD0534539F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFSolution.Tests.Future", "WFSolution.Tests.Future\WFSolution.Tests.Future.csproj", "{52A72496-3F1C-4908-9939-DFBF68103528}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CacheService|x64 = CacheService|x64
+		CacheServiceInstaller|x64 = CacheServiceInstaller|x64
+		Debug|x64 = Debug|x64
+		Editor|x64 = Editor|x64
+		Interface|x64 = Interface|x64
+		Service|x64 = Service|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.CacheService|x64.ActiveCfg = CacheService|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.CacheService|x64.Build.0 = CacheService|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.CacheServiceInstaller|x64.Build.0 = CacheServiceInstaller|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.Debug|x64.ActiveCfg = Debug|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.Debug|x64.Build.0 = Debug|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.Editor|x64.ActiveCfg = Editor|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.Editor|x64.Build.0 = Editor|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.Interface|x64.ActiveCfg = Debug|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.Service|x64.ActiveCfg = Service|x64
+		{44CC0F91-443B-4F96-BC23-5B3ABAB2DD89}.Service|x64.Build.0 = Service|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.CacheService|x64.ActiveCfg = Editor|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.Debug|x64.ActiveCfg = Debug|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.Debug|x64.Build.0 = Debug|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.Editor|x64.ActiveCfg = Debug|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.Interface|x64.ActiveCfg = Debug|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.Service|x64.ActiveCfg = Service|x64
+		{2A3327F7-27C3-4640-B1C3-7A5CC403A119}.Service|x64.Build.0 = Service|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.CacheService|x64.ActiveCfg = CacheService|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.CacheService|x64.Build.0 = CacheService|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.CacheServiceInstaller|x64.Build.0 = CacheServiceInstaller|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.Debug|x64.ActiveCfg = Debug|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.Debug|x64.Build.0 = Debug|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.Editor|x64.ActiveCfg = Debug|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.Interface|x64.ActiveCfg = Debug|x64
+		{A522ACD9-451D-4832-B293-92D4ECE7F59A}.Service|x64.ActiveCfg = Debug|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.CacheService|x64.ActiveCfg = Debug|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.Debug|x64.ActiveCfg = Debug|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.Debug|x64.Build.0 = Debug|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.Editor|x64.ActiveCfg = Editor|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.Editor|x64.Build.0 = Editor|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.Interface|x64.ActiveCfg = Debug|x64
+		{0F196B4C-8905-4446-8CB4-09C9D18E1211}.Service|x64.ActiveCfg = Debug|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.CacheService|x64.ActiveCfg = CacheService|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.CacheService|x64.Build.0 = CacheService|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.CacheServiceInstaller|x64.Build.0 = CacheServiceInstaller|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.Debug|x64.ActiveCfg = Debug|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.Debug|x64.Build.0 = Debug|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.Editor|x64.ActiveCfg = Editor|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.Editor|x64.Build.0 = Editor|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.Interface|x64.ActiveCfg = Debug|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.Service|x64.ActiveCfg = Service|x64
+		{EC2EBE92-F43C-40A5-8130-3E28C08FA54B}.Service|x64.Build.0 = Service|x64
+		{87419E98-86EC-4066-A68B-22AC47C7295D}.CacheService|x64.ActiveCfg = Debug|x64
+		{87419E98-86EC-4066-A68B-22AC47C7295D}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{87419E98-86EC-4066-A68B-22AC47C7295D}.Debug|x64.ActiveCfg = Debug|x64
+		{87419E98-86EC-4066-A68B-22AC47C7295D}.Debug|x64.Build.0 = Debug|x64
+		{87419E98-86EC-4066-A68B-22AC47C7295D}.Editor|x64.ActiveCfg = Debug|x64
+		{87419E98-86EC-4066-A68B-22AC47C7295D}.Interface|x64.ActiveCfg = Debug|x64
+		{87419E98-86EC-4066-A68B-22AC47C7295D}.Service|x64.ActiveCfg = Debug|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.CacheService|x64.ActiveCfg = CacheService|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.CacheService|x64.Build.0 = CacheService|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.CacheServiceInstaller|x64.Build.0 = CacheServiceInstaller|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Debug|x64.ActiveCfg = Debug|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Debug|x64.Build.0 = Debug|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Editor|x64.ActiveCfg = Editor|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Editor|x64.Build.0 = Editor|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Interface|x64.ActiveCfg = Interface|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Interface|x64.Build.0 = Interface|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Service|x64.ActiveCfg = Service|x64
+		{75A3B814-C81A-4F06-82CE-FA0DE9805A28}.Service|x64.Build.0 = Service|x64
+		{58054D7C-EE0F-4D7A-A138-29D0DC599402}.CacheService|x64.ActiveCfg = Debug|x64
+		{58054D7C-EE0F-4D7A-A138-29D0DC599402}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{58054D7C-EE0F-4D7A-A138-29D0DC599402}.Debug|x64.ActiveCfg = Debug|x64
+		{58054D7C-EE0F-4D7A-A138-29D0DC599402}.Debug|x64.Build.0 = Debug|x64
+		{58054D7C-EE0F-4D7A-A138-29D0DC599402}.Editor|x64.ActiveCfg = Debug|x64
+		{58054D7C-EE0F-4D7A-A138-29D0DC599402}.Interface|x64.ActiveCfg = Debug|x64
+		{58054D7C-EE0F-4D7A-A138-29D0DC599402}.Service|x64.ActiveCfg = Debug|x64
+		{67516868-4347-4FD5-9B9E-F41731986083}.CacheService|x64.ActiveCfg = CacheService|x64
+		{67516868-4347-4FD5-9B9E-F41731986083}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{67516868-4347-4FD5-9B9E-F41731986083}.CacheServiceInstaller|x64.Build.0 = CacheServiceInstaller|x64
+		{67516868-4347-4FD5-9B9E-F41731986083}.Debug|x64.ActiveCfg = Debug|x64
+		{67516868-4347-4FD5-9B9E-F41731986083}.Editor|x64.ActiveCfg = Debug|x64
+		{67516868-4347-4FD5-9B9E-F41731986083}.Interface|x64.ActiveCfg = Debug|x64
+		{67516868-4347-4FD5-9B9E-F41731986083}.Service|x64.ActiveCfg = Debug|x64
+		{20AB3AAC-3048-44E7-AF70-D26126E01800}.CacheService|x64.ActiveCfg = CacheService|x64
+		{20AB3AAC-3048-44E7-AF70-D26126E01800}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{20AB3AAC-3048-44E7-AF70-D26126E01800}.CacheServiceInstaller|x64.Build.0 = CacheServiceInstaller|x64
+		{20AB3AAC-3048-44E7-AF70-D26126E01800}.Debug|x64.ActiveCfg = Debug|x64
+		{20AB3AAC-3048-44E7-AF70-D26126E01800}.Editor|x64.ActiveCfg = Debug|x64
+		{20AB3AAC-3048-44E7-AF70-D26126E01800}.Interface|x64.ActiveCfg = Debug|x64
+		{20AB3AAC-3048-44E7-AF70-D26126E01800}.Service|x64.ActiveCfg = Debug|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.CacheService|x64.ActiveCfg = Debug|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.Debug|x64.ActiveCfg = Debug|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.Debug|x64.Build.0 = Debug|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.Editor|x64.ActiveCfg = Editor|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.Editor|x64.Build.0 = Editor|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.Interface|x64.ActiveCfg = Debug|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.Service|x64.ActiveCfg = Service|x64
+		{E19D2FDC-D11E-4A34-9000-26B0CC515567}.Service|x64.Build.0 = Service|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.CacheService|x64.ActiveCfg = Debug|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.Debug|x64.ActiveCfg = Debug|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.Debug|x64.Build.0 = Debug|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.Editor|x64.ActiveCfg = Editor|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.Editor|x64.Build.0 = Editor|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.Interface|x64.ActiveCfg = Debug|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.Service|x64.ActiveCfg = Service|x64
+		{61A7C682-AEA2-4A18-BB47-022F72F34AD5}.Service|x64.Build.0 = Service|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.CacheService|x64.ActiveCfg = CacheService|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.CacheService|x64.Build.0 = CacheService|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.CacheServiceInstaller|x64.ActiveCfg = CacheServiceInstaller|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.CacheServiceInstaller|x64.Build.0 = CacheServiceInstaller|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.Debug|x64.ActiveCfg = Debug|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.Debug|x64.Build.0 = Debug|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.Editor|x64.ActiveCfg = Editor|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.Editor|x64.Build.0 = Editor|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.Interface|x64.ActiveCfg = Debug|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.Service|x64.ActiveCfg = Service|x64
+		{86DD4F73-D258-42E8-92BA-1BDD0534539F}.Service|x64.Build.0 = Service|x64
+		{52A72496-3F1C-4908-9939-DFBF68103528}.CacheService|x64.ActiveCfg = Debug|x64
+		{52A72496-3F1C-4908-9939-DFBF68103528}.CacheServiceInstaller|x64.ActiveCfg = Debug|x64
+		{52A72496-3F1C-4908-9939-DFBF68103528}.Debug|x64.ActiveCfg = Debug|x64
+		{52A72496-3F1C-4908-9939-DFBF68103528}.Debug|x64.Build.0 = Debug|x64
+		{52A72496-3F1C-4908-9939-DFBF68103528}.Editor|x64.ActiveCfg = Debug|x64
+		{52A72496-3F1C-4908-9939-DFBF68103528}.Interface|x64.ActiveCfg = Debug|x64
+		{52A72496-3F1C-4908-9939-DFBF68103528}.Service|x64.ActiveCfg = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{67516868-4347-4FD5-9B9E-F41731986083} = {6106F544-F9D4-4E13-A6BE-41803DC2362B}
+		{20AB3AAC-3048-44E7-AF70-D26126E01800} = {6106F544-F9D4-4E13-A6BE-41803DC2362B}
+		{0AD48D0F-7337-40ED-AE8D-F4130ABFD2AE} = {4FAFE61F-45CA-490C-8D8C-15C4EB0AA65D}
+		{3BF14CB9-6E13-4FF9-AABD-E640964CE3D5} = {4FAFE61F-45CA-490C-8D8C-15C4EB0AA65D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8D99CF25-FFE7-428C-B700-6B712129C5A9}
+	EndGlobalSection
+EndGlobal
